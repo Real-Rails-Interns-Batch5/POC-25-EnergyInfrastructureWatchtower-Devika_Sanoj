@@ -1,0 +1,66 @@
+[
+  {
+    "event_id": 1,
+    "region": "India",
+    "city": "Mumbai",
+    "cause": "Grid Overload",
+    "customers_affected": 45000,
+    "date": "2026-06-01"
+  },
+  {
+    "event_id": 2,
+    "region": "India",
+    "city": "Delhi",
+    "cause": "Transmission Failure",
+    "customers_affected": 28000,
+    "date": "2026-06-03"
+  },
+  {
+    "event_id": 3,
+    "region": "Japan",
+    "city": "Tokyo",
+    "cause": "Equipment Maintenance",
+    "customers_affected": 18000,
+    "date": "2026-06-05"
+  },
+  {
+    "event_id": 4,
+    "region": "Germany",
+    "city": "Berlin",
+    "cause": "Grid Congestion",
+    "customers_affected": 15000,
+    "date": "2026-06-07"
+  },
+  {
+    "event_id": 5,
+    "region": "France",
+    "city": "Paris",
+    "cause": "Transformer Failure",
+    "customers_affected": 22000,
+    "date": "2026-06-08"
+  },
+  {
+    "event_id": 6,
+    "region": "UK",
+    "city": "London",
+    "cause": "Storm",
+    "customers_affected": 35000,
+    "date": "2026-06-09"
+  },
+  {
+    "event_id": 7,
+    "region": "UAE",
+    "city": "Dubai",
+    "cause": "Cooling System Issue",
+    "customers_affected": 12000,
+    "date": "2026-06-10"
+  },
+  {
+    "event_id": 8,
+    "region": "Singapore",
+    "city": "Singapore",
+    "cause": "Substation Fault",
+    "customers_affected": 10000,
+    "date": "2026-06-11"
+  }
+]
