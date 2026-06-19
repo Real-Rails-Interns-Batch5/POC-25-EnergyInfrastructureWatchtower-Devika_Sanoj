@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Energy Infrastructure Watchtower
 
 ## POC Information
@@ -312,3 +313,6 @@ Implemented:
 * Regional grid health forecasting
 
 #
+=======
+# POC-25-EnergyInfrastructureWatchtower-Devika_Sanoj
+>>>>>>> 32cd6ca4e1650beffa2ddea9e9daca5c75f66456
