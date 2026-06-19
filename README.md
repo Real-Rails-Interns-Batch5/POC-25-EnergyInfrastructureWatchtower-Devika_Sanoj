@@ -251,22 +251,7 @@ http://localhost:3000/dashboard
 
 ---
 
-# Screenshots
 
-Add the following screenshots:
-
-1. Landing Page
-2. Dashboard Overview
-3. Global Plant Map
-4. Outage Intelligence View
-5. Fuel Mix Analytics
-6. Regional Emissions Comparison
-7. Intelligence Sidebar
-8. AI Explanation Panel
-9. Filter Demonstration
-10. JSON Export Demonstration
-
----
 
 # AI Usage Summary
 
@@ -312,7 +297,5 @@ Implemented:
 * Asset clustering for large datasets
 * Regional grid health forecasting
 
-#
-=======
-# POC-25-EnergyInfrastructureWatchtower-Devika_Sanoj
->>>>>>> 32cd6ca4e1650beffa2ddea9e9daca5c75f66456
+
+
