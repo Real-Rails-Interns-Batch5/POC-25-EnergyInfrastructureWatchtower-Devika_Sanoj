@@ -149,463 +149,6 @@ frontend/tsconfig.json
 <files>
 This section contains the contents of the repository's files.
 
-<file path="backend/.env">
-
-</file>
-
-<file path="backend/app/data/emissions.csv">
-region,co2_mt
-India,420
-Japan,280
-Germany,190
-France,140
-UK,120
-UAE,210
-Singapore,95
-Australia,260
-USA,510
-</file>
-
-<file path="backend/app/data/fuel_mix.csv">
-fuel,share
-Solar,28
-Wind,24
-Hydro,14
-Natural Gas,18
-Coal,10
-Nuclear,6
-</file>
-
-<file path="backend/app/data/mock_outages.json">
-[
-  {
-    "event_id": 1,
-    "region": "India",
-    "city": "Mumbai",
-    "cause": "Grid Overload",
-    "customers_affected": 45000,
-    "date": "2026-06-01"
-  },
-  {
-    "event_id": 2,
-    "region": "India",
-    "city": "Delhi",
-    "cause": "Transmission Failure",
-    "customers_affected": 28000,
-    "date": "2026-06-03"
-  },
-  {
-    "event_id": 3,
-    "region": "Japan",
-    "city": "Tokyo",
-    "cause": "Equipment Maintenance",
-    "customers_affected": 18000,
-    "date": "2026-06-05"
-  },
-  {
-    "event_id": 4,
-    "region": "Germany",
-    "city": "Berlin",
-    "cause": "Grid Congestion",
-    "customers_affected": 15000,
-    "date": "2026-06-07"
-  },
-  {
-    "event_id": 5,
-    "region": "France",
-    "city": "Paris",
-    "cause": "Transformer Failure",
-    "customers_affected": 22000,
-    "date": "2026-06-08"
-  },
-  {
-    "event_id": 6,
-    "region": "UK",
-    "city": "London",
-    "cause": "Storm",
-    "customers_affected": 35000,
-    "date": "2026-06-09"
-  },
-  {
-    "event_id": 7,
-    "region": "UAE",
-    "city": "Dubai",
-    "cause": "Cooling System Issue",
-    "customers_affected": 12000,
-    "date": "2026-06-10"
-  },
-  {
-    "event_id": 8,
-    "region": "Singapore",
-    "city": "Singapore",
-    "cause": "Substation Fault",
-    "customers_affected": 10000,
-    "date": "2026-06-11"
-  }
-]
-</file>
-
-<file path="backend/app/data/plants.csv">
-id,name,fuel_type,capacity_mw,lat,lng,region
-1,Mumbai Solar Hub,Solar,1200,19.0760,72.8777,India
-2,Delhi Grid Station,Natural Gas,1500,28.6139,77.2090,India
-3,Bengaluru Wind Cluster,Wind,1100,12.9716,77.5946,India
-4,Chennai Hydro Node,Hydro,900,13.0827,80.2707,India
-5,Tokyo Energy Complex,Solar,1400,35.6762,139.6503,Japan
-6,Osaka Grid Hub,Natural Gas,1300,34.6937,135.5023,Japan
-7,Berlin Renewable Center,Wind,1600,52.5200,13.4050,Germany
-8,Paris Energy Hub,Nuclear,2000,48.8566,2.3522,France
-9,London Grid Exchange,Wind,1700,51.5072,-0.1276,UK
-10,Dubai Power Station,Solar,1800,25.2048,55.2708,UAE
-11,Singapore Smart Grid,Natural Gas,1250,1.3521,103.8198,Singapore
-12,Sydney Renewable Park,Wind,1450,-33.8688,151.2093,Australia
-13,Houston Energy Hub,Natural Gas,2100,29.7604,-95.3698,USA
-14,California Solar Plant,Solar,950,36.7700,-119.4100,USA
-15,Texas Wind Farm,Wind,1800,31.9600,-99.9000,USA
-</file>
-
-<file path="backend/app/main.py">
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from app.routes import (
-    plants,
-    fuel_mix,
-    outages,
-    emissions,
-    regions,
-    intelligence
-)
-
-app = FastAPI(
-    title="Energy Infrastructure Watchtower",
-    version="1.0.0"
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(plants.router)
-app.include_router(fuel_mix.router)
-app.include_router(outages.router)
-app.include_router(emissions.router)
-app.include_router(regions.router)
-app.include_router(intelligence.router)
-
-@app.get("/")
-def home():
-    return {
-        "message": "Energy Infrastructure Watchtower API"
-    }
-</file>
-
-<file path="backend/app/models/schemas.py">
-from pydantic import BaseModel
-
-
-class Plant(BaseModel):
-    id: int
-    name: str
-    fuel_type: str
-    capacity_mw: float
-    lat: float
-    lng: float
-    region: str
-
-
-class FuelMix(BaseModel):
-    fuel: str
-    share: float
-
-
-class Outage(BaseModel):
-    event_id: int
-    region: str
-    cause: str
-    customers_affected: int
-    date: str
-
-
-class Emission(BaseModel):
-    region: str
-    co2_mt: float
-</file>
-
-<file path="backend/app/routes/emissions.py">
-from fastapi import APIRouter
-from app.services.owid_service import (
-    get_emissions
-)
-
-router = APIRouter(
-    prefix="/api/emissions",
-    tags=["Emissions"]
-)
-
-@router.get("/")
-def emissions():
-
-    return get_emissions()
-</file>
-
-<file path="backend/app/routes/fuel_mix.py">
-from fastapi import APIRouter
-from app.services.eia_service import get_fuel_mix
-
-router = APIRouter(
-    prefix="/api/fuel-mix",
-    tags=["Fuel Mix"]
-)
-
-@router.get("/")
-def fuel_mix():
-
-    return get_fuel_mix()
-</file>
-
-<file path="backend/app/routes/intelligence.py">
-from fastapi import APIRouter
-from app.services.intelligence_service import (
-    get_dashboard_metrics
-)
-
-router = APIRouter(
-    prefix="/api/intelligence",
-    tags=["Intelligence"]
-)
-
-@router.get("/dashboard")
-def dashboard():
-
-    return get_dashboard_metrics()
-</file>
-
-<file path="backend/app/routes/outages.py">
-from fastapi import APIRouter
-from app.services.mock_service import (
-    load_mock_outages
-)
-
-router = APIRouter(
-    prefix="/api/outages",
-    tags=["Outages"]
-)
-
-@router.get("/")
-def outages():
-
-    return load_mock_outages()
-</file>
-
-<file path="backend/app/routes/plants.py">
-from fastapi import APIRouter
-from app.services.eia_service import get_plants
-
-router = APIRouter(
-    prefix="/api/plants",
-    tags=["Plants"]
-)
-
-@router.get("/")
-def plants():
-
-    return get_plants()
-</file>
-
-<file path="backend/app/routes/regions.py">
-from fastapi import APIRouter
-import pandas as pd
-from pathlib import Path
-
-router = APIRouter(
-    prefix="/api/regions",
-    tags=["Regions"]
-)
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-@router.get("/")
-def regions():
-
-    file_path = BASE_DIR / "data" / "plants.csv"
-
-    df = pd.read_csv(file_path)
-
-    return sorted(
-        df["region"].unique().tolist()
-    )
-</file>
-
-<file path="backend/app/services/eia_service.py">
-import pandas as pd
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-def get_plants():
-
-    file_path = BASE_DIR / "data" / "plants.csv"
-
-    return pd.read_csv(file_path).to_dict(
-        orient="records"
-    )
-
-
-def get_fuel_mix():
-
-    file_path = BASE_DIR / "data" / "fuel_mix.csv"
-
-    return pd.read_csv(file_path).to_dict(
-        orient="records"
-    )
-</file>
-
-<file path="backend/app/services/intelligence_service.py">
-import pandas as pd
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-def get_dashboard_metrics():
-
-    fuel_path = BASE_DIR / "data" / "fuel_mix.csv"
-    emissions_path = BASE_DIR / "data" / "emissions.csv"
-
-    fuel_df = pd.read_csv(fuel_path)
-    emissions_df = pd.read_csv(emissions_path)
-
-    renewable_share = fuel_df[
-        fuel_df["fuel"].isin(
-            ["Solar", "Wind", "Hydro"]
-        )
-    ]["share"].sum()
-
-    avg_emissions = emissions_df["co2_mt"].mean()
-
-    return {
-        "headline_metric": {
-            "value": f"{renewable_share:.1f}%",
-            "label": "Renewable Share"
-        },
-
-        "regional_delta": {
-            "value": "+8.2%",
-            "description": "Above National Average"
-        },
-
-        "outage_risk": "Moderate",
-
-        "emission_trend": "Declining",
-
-        "average_emissions": round(avg_emissions, 2),
-
-        "risk_scores": [
-            {
-                "region": "India",
-                "score": 78,
-                "level": "High",
-                "ai_explanation":
-                    "Rapid demand growth and transmission congestion increase outage exposure."
-            },
-            {
-                "region": "Japan",
-                "score": 52,
-                "level": "Medium",
-                "ai_explanation":
-                    "Strong infrastructure but aging assets require modernization."
-            },
-            {
-                "region": "Germany",
-                "score": 46,
-                "level": "Medium",
-                "ai_explanation":
-                    "Renewable integration introduces balancing complexity."
-            },
-            {
-                "region": "France",
-                "score": 35,
-                "level": "Low",
-                "ai_explanation":
-                    "Stable generation capacity supports reliability."
-            },
-            {
-                "region": "UK",
-                "score": 42,
-                "level": "Low",
-                "ai_explanation":
-                    "Grid modernization continues to reduce risk."
-            }
-        ],
-
-        "energy_flows": [
-            {
-                "from": "Mumbai",
-                "to": "Delhi"
-            },
-            {
-                "from": "Delhi",
-                "to": "Bengaluru"
-            },
-            {
-                "from": "Tokyo",
-                "to": "Osaka"
-            },
-            {
-                "from": "Berlin",
-                "to": "Paris"
-            },
-            {
-                "from": "Paris",
-                "to": "London"
-            }
-        ]
-    }
-</file>
-
-<file path="backend/app/services/mock_service.py">
-import json
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-def load_mock_outages():
-    file_path = BASE_DIR / "data" / "mock_outages.json"
-
-    with open(file_path, "r") as file:
-        return json.load(file)
-</file>
-
-<file path="backend/app/services/owid_service.py">
-import pandas as pd
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-def get_emissions():
-
-    file_path = BASE_DIR / "data" / "emissions.csv"
-
-    return pd.read_csv(file_path).to_dict(
-        orient="records"
-    )
-</file>
-
-<file path="backend/requirements.txt">
-fastapi
-uvicorn
-pandas
-python-dotenv
-pydantic
-</file>
-
 <file path="frontend/.git/COMMIT_EDITMSG">
 Initial commit from Create Next App
 </file>
@@ -2183,13 +1726,17 @@ export default function MapInner({ data }: any) {
 
       <div className="h-[600px] w-full">
         <MapContainer
-          center={center}
-          zoom={2}
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
-        >
+  center={center}
+  zoom={2}
+  scrollWheelZoom={false}
+  doubleClickZoom={true}
+  dragging={true}
+  zoomControl={true}
+  style={{
+    height: "100%",
+    width: "100%",
+  }}
+>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           />
@@ -2401,14 +1948,105 @@ export default function OutageTimeline({
 <file path="frontend/app/components/PlantMap.tsx">
 "use client";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 
-const MapInner = dynamic(() => import("./MapInner"), {
-  ssr: false,
-});
+const MapInner = dynamic(
+  () => import("./MapInner"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="
+          h-[700px]
+          flex
+          items-center
+          justify-center
+          bg-[#0B1117]
+          border
+          border-[#1F2937]
+          rounded-lg
+        "
+      >
+        <div className="text-center">
+          <div className="text-[#38BDF8] text-lg font-semibold">
+            Loading Global Infrastructure Network...
+          </div>
+
+          <div className="text-gray-400 text-sm mt-2">
+            Initializing map engine
+          </div>
+        </div>
+      </div>
+    ),
+  }
+);
 
 export default function PlantMap({ data }: any) {
+  const [activateMap, setActivateMap] =
+    useState(false);
+
+  if (!activateMap) {
+    return (
+      <div
+        className="
+          h-[700px]
+          bg-[#0B1117]
+          border
+          border-[#1F2937]
+          rounded-lg
+          flex
+          flex-col
+          items-center
+          justify-center
+        "
+      >
+        <div className="text-center max-w-lg">
+          <h2
+            className="
+              text-2xl
+              font-bold
+              text-[#38BDF8]
+            "
+          >
+            Global Energy Infrastructure Network
+          </h2>
+
+          <p
+            className="
+              text-gray-400
+              mt-3
+            "
+          >
+            Plant locations, outage intelligence,
+            regional infrastructure monitoring,
+            and energy flow visibility.
+          </p>
+
+          <button
+            onClick={() =>
+              setActivateMap(true)
+            }
+            className="
+              mt-6
+              px-6
+              py-3
+              rounded-lg
+              bg-[#38BDF8]
+              text-black
+              font-semibold
+              hover:scale-105
+              transition
+            "
+          >
+            Activate Infrastructure Map
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return <MapInner data={data} />;
 }
 </file>
@@ -2657,13 +2295,31 @@ export default function Page() {
   const [selectedFuel, setSelectedFuel] = useState("All");
 
   useEffect(() => {
-    fetchPlants().then(setPlants);
-    fetchFuelMix().then(setFuelMix);
-    fetchOutages().then(setOutages);
-    fetchEmissions().then(setEmissions);
-    fetchRegions().then(setRegions);
-    fetchIntelligence().then(setIntel);
-  }, []);
+  Promise.all([
+    fetchPlants(),
+    fetchFuelMix(),
+    fetchOutages(),
+    fetchEmissions(),
+    fetchRegions(),
+    fetchIntelligence(),
+  ]).then(
+    ([
+      plantsData,
+      fuelData,
+      outageData,
+      emissionData,
+      regionData,
+      intelData,
+    ]) => {
+      setPlants(plantsData);
+      setFuelMix(fuelData);
+      setOutages(outageData);
+      setEmissions(emissionData);
+      setRegions(regionData);
+      setIntel(intelData);
+    }
+  );
+}, []);
 
   // FILTER LOGIC (FIXED + STABLE)
   const filteredPlants = useMemo(() => {
@@ -3279,6 +2935,463 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   ],
   "exclude": ["node_modules"]
 }
+</file>
+
+<file path="backend/.env">
+
+</file>
+
+<file path="backend/app/data/emissions.csv">
+region,co2_mt
+India,420
+Japan,280
+Germany,190
+France,140
+UK,120
+UAE,210
+Singapore,95
+Australia,260
+USA,510
+</file>
+
+<file path="backend/app/data/fuel_mix.csv">
+fuel,share
+Solar,28
+Wind,24
+Hydro,14
+Natural Gas,18
+Coal,10
+Nuclear,6
+</file>
+
+<file path="backend/app/data/mock_outages.json">
+[
+  {
+    "event_id": 1,
+    "region": "India",
+    "city": "Mumbai",
+    "cause": "Grid Overload",
+    "customers_affected": 45000,
+    "date": "2026-06-01"
+  },
+  {
+    "event_id": 2,
+    "region": "India",
+    "city": "Delhi",
+    "cause": "Transmission Failure",
+    "customers_affected": 28000,
+    "date": "2026-06-03"
+  },
+  {
+    "event_id": 3,
+    "region": "Japan",
+    "city": "Tokyo",
+    "cause": "Equipment Maintenance",
+    "customers_affected": 18000,
+    "date": "2026-06-05"
+  },
+  {
+    "event_id": 4,
+    "region": "Germany",
+    "city": "Berlin",
+    "cause": "Grid Congestion",
+    "customers_affected": 15000,
+    "date": "2026-06-07"
+  },
+  {
+    "event_id": 5,
+    "region": "France",
+    "city": "Paris",
+    "cause": "Transformer Failure",
+    "customers_affected": 22000,
+    "date": "2026-06-08"
+  },
+  {
+    "event_id": 6,
+    "region": "UK",
+    "city": "London",
+    "cause": "Storm",
+    "customers_affected": 35000,
+    "date": "2026-06-09"
+  },
+  {
+    "event_id": 7,
+    "region": "UAE",
+    "city": "Dubai",
+    "cause": "Cooling System Issue",
+    "customers_affected": 12000,
+    "date": "2026-06-10"
+  },
+  {
+    "event_id": 8,
+    "region": "Singapore",
+    "city": "Singapore",
+    "cause": "Substation Fault",
+    "customers_affected": 10000,
+    "date": "2026-06-11"
+  }
+]
+</file>
+
+<file path="backend/app/data/plants.csv">
+id,name,fuel_type,capacity_mw,lat,lng,region
+1,Mumbai Solar Hub,Solar,1200,19.0760,72.8777,India
+2,Delhi Grid Station,Natural Gas,1500,28.6139,77.2090,India
+3,Bengaluru Wind Cluster,Wind,1100,12.9716,77.5946,India
+4,Chennai Hydro Node,Hydro,900,13.0827,80.2707,India
+5,Tokyo Energy Complex,Solar,1400,35.6762,139.6503,Japan
+6,Osaka Grid Hub,Natural Gas,1300,34.6937,135.5023,Japan
+7,Berlin Renewable Center,Wind,1600,52.5200,13.4050,Germany
+8,Paris Energy Hub,Nuclear,2000,48.8566,2.3522,France
+9,London Grid Exchange,Wind,1700,51.5072,-0.1276,UK
+10,Dubai Power Station,Solar,1800,25.2048,55.2708,UAE
+11,Singapore Smart Grid,Natural Gas,1250,1.3521,103.8198,Singapore
+12,Sydney Renewable Park,Wind,1450,-33.8688,151.2093,Australia
+13,Houston Energy Hub,Natural Gas,2100,29.7604,-95.3698,USA
+14,California Solar Plant,Solar,950,36.7700,-119.4100,USA
+15,Texas Wind Farm,Wind,1800,31.9600,-99.9000,USA
+</file>
+
+<file path="backend/app/main.py">
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.routes import (
+    plants,
+    fuel_mix,
+    outages,
+    emissions,
+    regions,
+    intelligence
+)
+
+app = FastAPI(
+    title="Energy Infrastructure Watchtower",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(plants.router)
+app.include_router(fuel_mix.router)
+app.include_router(outages.router)
+app.include_router(emissions.router)
+app.include_router(regions.router)
+app.include_router(intelligence.router)
+
+@app.get("/")
+def home():
+    return {
+        "message": "Energy Infrastructure Watchtower API"
+    }
+</file>
+
+<file path="backend/app/models/schemas.py">
+from pydantic import BaseModel
+
+
+class Plant(BaseModel):
+    id: int
+    name: str
+    fuel_type: str
+    capacity_mw: float
+    lat: float
+    lng: float
+    region: str
+
+
+class FuelMix(BaseModel):
+    fuel: str
+    share: float
+
+
+class Outage(BaseModel):
+    event_id: int
+    region: str
+    cause: str
+    customers_affected: int
+    date: str
+
+
+class Emission(BaseModel):
+    region: str
+    co2_mt: float
+</file>
+
+<file path="backend/app/routes/emissions.py">
+from fastapi import APIRouter
+from app.services.owid_service import (
+    get_emissions
+)
+
+router = APIRouter(
+    prefix="/api/emissions",
+    tags=["Emissions"]
+)
+
+@router.get("/")
+def emissions():
+
+    return get_emissions()
+</file>
+
+<file path="backend/app/routes/fuel_mix.py">
+from fastapi import APIRouter
+from app.services.eia_service import get_fuel_mix
+
+router = APIRouter(
+    prefix="/api/fuel-mix",
+    tags=["Fuel Mix"]
+)
+
+@router.get("/")
+def fuel_mix():
+
+    return get_fuel_mix()
+</file>
+
+<file path="backend/app/routes/intelligence.py">
+from fastapi import APIRouter
+from app.services.intelligence_service import (
+    get_dashboard_metrics
+)
+
+router = APIRouter(
+    prefix="/api/intelligence",
+    tags=["Intelligence"]
+)
+
+@router.get("/dashboard")
+def dashboard():
+
+    return get_dashboard_metrics()
+</file>
+
+<file path="backend/app/routes/outages.py">
+from fastapi import APIRouter
+from app.services.mock_service import (
+    load_mock_outages
+)
+
+router = APIRouter(
+    prefix="/api/outages",
+    tags=["Outages"]
+)
+
+@router.get("/")
+def outages():
+
+    return load_mock_outages()
+</file>
+
+<file path="backend/app/routes/plants.py">
+from fastapi import APIRouter
+from app.services.eia_service import get_plants
+
+router = APIRouter(
+    prefix="/api/plants",
+    tags=["Plants"]
+)
+
+@router.get("/")
+def plants():
+
+    return get_plants()
+</file>
+
+<file path="backend/app/routes/regions.py">
+from fastapi import APIRouter
+import pandas as pd
+from pathlib import Path
+
+router = APIRouter(
+    prefix="/api/regions",
+    tags=["Regions"]
+)
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+@router.get("/")
+def regions():
+
+    file_path = BASE_DIR / "data" / "plants.csv"
+
+    df = pd.read_csv(file_path)
+
+    return sorted(
+        df["region"].unique().tolist()
+    )
+</file>
+
+<file path="backend/app/services/eia_service.py">
+import pandas as pd
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def get_plants():
+
+    file_path = BASE_DIR / "data" / "plants.csv"
+
+    return pd.read_csv(file_path).to_dict(
+        orient="records"
+    )
+
+
+def get_fuel_mix():
+
+    file_path = BASE_DIR / "data" / "fuel_mix.csv"
+
+    return pd.read_csv(file_path).to_dict(
+        orient="records"
+    )
+</file>
+
+<file path="backend/app/services/intelligence_service.py">
+import pandas as pd
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def get_dashboard_metrics():
+
+    fuel_path = BASE_DIR / "data" / "fuel_mix.csv"
+    emissions_path = BASE_DIR / "data" / "emissions.csv"
+
+    fuel_df = pd.read_csv(fuel_path)
+    emissions_df = pd.read_csv(emissions_path)
+
+    renewable_share = fuel_df[
+        fuel_df["fuel"].isin(
+            ["Solar", "Wind", "Hydro"]
+        )
+    ]["share"].sum()
+
+    avg_emissions = emissions_df["co2_mt"].mean()
+
+    return {
+        "headline_metric": {
+            "value": f"{renewable_share:.1f}%",
+            "label": "Renewable Share"
+        },
+
+        "regional_delta": {
+            "value": "+8.2%",
+            "description": "Above National Average"
+        },
+
+        "outage_risk": "Moderate",
+
+        "emission_trend": "Declining",
+
+        "average_emissions": round(avg_emissions, 2),
+
+        "risk_scores": [
+            {
+                "region": "India",
+                "score": 78,
+                "level": "High",
+                "ai_explanation":
+                    "Rapid demand growth and transmission congestion increase outage exposure."
+            },
+            {
+                "region": "Japan",
+                "score": 52,
+                "level": "Medium",
+                "ai_explanation":
+                    "Strong infrastructure but aging assets require modernization."
+            },
+            {
+                "region": "Germany",
+                "score": 46,
+                "level": "Medium",
+                "ai_explanation":
+                    "Renewable integration introduces balancing complexity."
+            },
+            {
+                "region": "France",
+                "score": 35,
+                "level": "Low",
+                "ai_explanation":
+                    "Stable generation capacity supports reliability."
+            },
+            {
+                "region": "UK",
+                "score": 42,
+                "level": "Low",
+                "ai_explanation":
+                    "Grid modernization continues to reduce risk."
+            }
+        ],
+
+        "energy_flows": [
+            {
+                "from": "Mumbai",
+                "to": "Delhi"
+            },
+            {
+                "from": "Delhi",
+                "to": "Bengaluru"
+            },
+            {
+                "from": "Tokyo",
+                "to": "Osaka"
+            },
+            {
+                "from": "Berlin",
+                "to": "Paris"
+            },
+            {
+                "from": "Paris",
+                "to": "London"
+            }
+        ]
+    }
+</file>
+
+<file path="backend/app/services/mock_service.py">
+import json
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+def load_mock_outages():
+    file_path = BASE_DIR / "data" / "mock_outages.json"
+
+    with open(file_path, "r") as file:
+        return json.load(file)
+</file>
+
+<file path="backend/app/services/owid_service.py">
+import pandas as pd
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def get_emissions():
+
+    file_path = BASE_DIR / "data" / "emissions.csv"
+
+    return pd.read_csv(file_path).to_dict(
+        orient="records"
+    )
+</file>
+
+<file path="backend/requirements.txt">
+fastapi
+uvicorn
+pandas
+python-dotenv
+pydantic
 </file>
 
 </files>
