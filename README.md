@@ -153,23 +153,6 @@ Fallback data is automatically used when event-level outage feeds are unavailabl
 * Risk Intelligence
 * Infrastructure Context
 
----
-
-# Project Structure
-
-```text
-POC-25-EnergyInfrastructureWatchtower/
-
-├── backend/
-│
-├── frontend/
-│
-├── README.md
-├── VAR_REPORT.md
-└── UAT_CHECKLIST.md
-```
-
----
 
 # Backend Setup
 
