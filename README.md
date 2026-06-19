@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Energy Infrastructure Watchtower
 
 ## POC Information
