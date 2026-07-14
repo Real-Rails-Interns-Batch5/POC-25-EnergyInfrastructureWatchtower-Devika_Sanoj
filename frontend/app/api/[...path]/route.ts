@@ -11,7 +11,8 @@ export async function GET(
   const searchParams = request.nextUrl.searchParams.toString();
   const query = searchParams ? `?${searchParams}` : "";
 
-  const targetUrl = `http://127.0.0.1:8000/api/${pathStr}/${query}`;
+  const backendUrl = process.env.BACKEND_URL || "http://127.0.0.1:8000";
+  const targetUrl = `${backendUrl}/api/${pathStr}/${query}`;
 
   try {
     const res = await fetch(targetUrl, {
