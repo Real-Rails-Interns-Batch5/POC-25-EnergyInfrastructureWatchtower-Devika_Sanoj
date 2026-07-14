@@ -1,28 +1,14 @@
 services:
-  # 1. FastAPI Backend Service
   - type: web
-    name: energy-watchtower-backend
+    name: energy-watchtower
     env: docker
-    dockerContext: backend
-    dockerfilePath: backend/Dockerfile
-    plan: free # Change if using a paid tier
-    envVars:
-      - key: PORT
-        value: 8000
-      - key: DATA_API_KEY
-        sync: false
-      - key: MAPBOX_API_KEY
-        sync: false
-
-  # 2. Next.js Frontend Service
-  - type: web
-    name: energy-watchtower-frontend
-    env: docker
-    dockerContext: frontend
-    dockerfilePath: frontend/Dockerfile
+    dockerContext: .
+    dockerfilePath: Dockerfile
     plan: free
     envVars:
       - key: PORT
         value: 3000
-      - key: NEXT_PUBLIC_API_URL
-        sync: false # User can provide their backend's public Render URL here
+      - key: DATA_API_KEY
+        sync: false
+      - key: MAPBOX_API_KEY
+        sync: false

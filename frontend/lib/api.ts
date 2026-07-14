@@ -1,6 +1,6 @@
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "http://backend:8000";
+  "";
 
 export async function fetchPlants() {
   const res = await fetch(`${BASE_URL}/api/plants/`);
