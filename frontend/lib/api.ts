@@ -1,6 +1,5 @@
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "";
+// Always use relative paths — Next.js rewrites proxy /api/* to the backend container
+const BASE_URL = "";
 
 export async function fetchPlants() {
   const res = await fetch(`${BASE_URL}/api/plants/`);

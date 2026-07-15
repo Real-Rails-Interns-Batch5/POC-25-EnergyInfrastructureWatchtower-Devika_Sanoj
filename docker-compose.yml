@@ -25,20 +25,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-
     container_name: energy-watchtower-frontend
 
     ports:
       - "${FRONTEND_PORT}:3000"
 
-    env_file:
-      - .env
-
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      # BACKEND_URL tells Next.js server-side rewrite proxy where to forward /api/* requests
       BACKEND_URL: http://backend:8000
+
     depends_on:
       - backend
 
